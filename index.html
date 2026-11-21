@@ -118,6 +118,42 @@ display:flex;align-items:center;gap:14px;
     position:fixed;inset:0;z-index:20;pointer-events:none;
   }
 
+  /* ===== 加载动画 ===== */
+  #loader{
+    position:fixed;inset:0;z-index:100;
+    background:var(--bg3);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;
+    transition:opacity .45s ease;
+  }
+  #loader.hide{opacity:0;pointer-events:none;}
+  .loader-logo{
+    width:72px;height:72px;border-radius:24px;
+    background:linear-gradient(135deg,var(--blob1),var(--blob2));
+    display:flex;align-items:center;justify-content:center;font-size:36px;
+    box-shadow:0 10px 28px rgba(91,140,255,.40),inset 0 1px 0 rgba(255,255,255,.35);
+    animation:loader-run .7s ease-in-out infinite alternate;
+  }
+  .loader-text{color:var(--sub);font-size:15px;letter-spacing:3px;}
+  .loader-track{
+    width:180px;height:5px;border-radius:5px;overflow:hidden;
+background:rgba(255,255,255,.15);
+  }
+  .loader-bar{
+    width:40%;height:100%;border-radius:5px;
+    background:linear-gradient(90deg,var(--accent),var(--blob2));
+    box-shadow:0 0 10px rgba(255,170,110,.6);
+    animation:loader-slide 1.2s ease-in-out infinite;
+  }
+  @keyframes loader-run{
+    0%{transform:translateY(0) rotate(-8deg);}
+    100%{transform:translateY(-6px) rotate(8deg);}
+  }
+  @keyframes loader-slide{
+    0%{transform:translateX(0);}
+    50%{transform:translateX(150%);}
+    100%{transform:translateX(0);}
+  }
+
   /* ===== 标题下方：玻璃横杠播放器 ===== */
   .music{max-width:340px;margin:0 auto 24px;position:relative;z-index:1;}
   .music-bar{
@@ -127,12 +163,12 @@ display:flex;align-items:center;gap:14px;
   .bar-meta{text-align:center;min-width:0;}
   .bar-title{display:block;font-weight:600;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
   .bar-state{display:block;font-size:12px;color:var(--sub);margin-top:3px;}
-  .music-bar .controls{display:flex;align-items:center;justify-content:center;gap:16px;}
+.music-bar .controls{display:flex;align-items:center;justify-content:center;gap:16px;}
   .music-bar #progress{width:100%;}
   .pbtn{
     width:36px;height:36px;border-radius:50%;border:1px solid rgba(255,255,255,.28);
     background:linear-gradient(135deg,rgba(255,255,255,.22),rgba(255,255,255,.08));
-color:#fff;font-size:15px;
+    color:#fff;font-size:15px;
     display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;
     backdrop-filter:blur(12px) saturate(160%);-webkit-backdrop-filter:blur(12px) saturate(160%);
     box-shadow:inset 0 1px 0 rgba(255,255,255,.30),inset 0 -2px 5px rgba(255,255,255,.08),0 4px 12px rgba(0,0,0,.18);
@@ -142,10 +178,10 @@ color:#fff;font-size:15px;
   .pbtn:active{transform:scale(.92);}
   .pbtn.play{
     width:46px;height:46px;font-size:18px;border:1px solid rgba(255,255,255,.38);
-    background:linear-gradient(135deg,rgba(255,255,255,.28),rgba(255,255,255,.10));
+background:linear-gradient(135deg,rgba(255,255,255,.28),rgba(255,255,255,.10));
     backdrop-filter:blur(14px) saturate(160%);-webkit-backdrop-filter:blur(14px) saturate(160%);
     box-shadow:inset 0 1px 0 rgba(255,255,255,.40),inset 0 -2px 6px rgba(255,255,255,.10),0 6px 16px rgba(0,0,0,.22);
-}
+  }
   .pbtn.play:hover{transform:scale(1.1);}
   .time{display:none;}
 
@@ -162,11 +198,18 @@ color:#fff;font-size:15px;
   #progress::-moz-range-thumb{
     width:14px;height:14px;border-radius:50%;background:#fff;border:none;cursor:pointer;
     box-shadow:0 0 8px var(--accent),0 0 16px var(--accent),0 0 24px rgba(255,150,90,.6);
-  }
+}
   #progress::-moz-range-track{background:transparent;}
 </style>
 </head>
 <body>
+  <!-- 加载动画 -->
+  <div id="loader">
+    <div class="loader-logo">🏃</div>
+    <div class="loader-text">正在进入中</div>
+    <div class="loader-track"><div class="loader-bar"></div></div>
+  </div>
+
   <div class="blob b1"></div>
   <div class="blob b2"></div>
   <div class="blob b3"></div>
@@ -175,7 +218,7 @@ color:#fff;font-size:15px;
   <div class="wrap">
     <div class="hero">
       <div class="avatar" id="heroIcon">🌐</div>
-<h1 id="siteTitle">小哲分享</h1>
+      <h1 id="siteTitle">小哲分享</h1>
       <p id="siteDesc">精选链接，点击即可跳转</p>
     </div>
 
@@ -189,7 +232,7 @@ color:#fff;font-size:15px;
         <div class="controls">
           <button class="pbtn" id="prevBtn" title="上一首">⏮</button>
           <button class="pbtn play" id="playBtn" title="播放/暂停">▶</button>
-          <button class="pbtn" id="nextBtn" title="下一首">⏭</button>
+<button class="pbtn" id="nextBtn" title="下一首">⏭</button>
         </div>
         <input type="range" id="progress" min="0" max="100" value="0">
         <div class="time"><span id="curTime">0:00</span> / <span id="durTime">0:00</span></div>
@@ -206,7 +249,7 @@ color:#fff;font-size:15px;
 
 <script>
 /* ============================================================
-★★★ 自定义区：只改这一段 ★★★
+   ★★★ 自定义区：只改这一段 ★★★
    - siteTitle / siteDesc / heroIcon / footer：顶部与底部文字
    - LINKS：分类数组，每个分类下 items 放链接
      { icon:"📘", title:"名称", desc:"一句话说明", url:"https://跳转地址" }
@@ -236,7 +279,7 @@ const LINKS = [
     items: [
       { icon:"📚", title:"课程合集", desc:"系统学习教程", url:"https://example.com/course" },
       { icon:"🔎", title:"资料检索", desc:"文献与资料查找", url:"https://example.com/search" },
-{ icon:"🌐", title:"百科查询", desc:"常识与资料补充", url:"https://example.com/wiki" },
+      { icon:"🌐", title:"百科查询", desc:"常识与资料补充", url:"https://example.com/wiki" },
     ]
   },
   {
@@ -269,7 +312,7 @@ function render(keyword = "") {
 
   LINKS.forEach(group => {
     const items = group.items.filter(it =>
-!kw || it.title.toLowerCase().includes(kw) || it.desc.toLowerCase().includes(kw)
+      !kw || it.title.toLowerCase().includes(kw) || it.desc.toLowerCase().includes(kw)
     );
     if (items.length === 0) return;
     total += items.length;
@@ -281,7 +324,7 @@ function render(keyword = "") {
 
     items.forEach(it => {
       const a = document.createElement("a");
-      a.className = "card glass";
+a.className = "card glass";
       const isAnchor = it.url && it.url.startsWith("#");
       a.href = it.url;
       if (!isAnchor) { a.target = "_blank"; a.rel = "noopener noreferrer"; }
@@ -293,7 +336,7 @@ function render(keyword = "") {
           <div class="desc">${it.desc || ""}</div>
         </div>`;
       grid.appendChild(a);
-});
+    });
     section.appendChild(grid);
     content.appendChild(section);
   });
@@ -324,7 +367,7 @@ function fmt(sec){
 function syncPlayUI(){
   const playing = !audio.paused && !audio.ended;
   playBtn.textContent = playing ? "⏸" : "▶";
-barState.textContent = playing ? "正在播放" : "已暂停";
+  barState.textContent = playing ? "正在播放" : "已暂停";
 }
 
 function loadTrack(i, autoplay = true){
@@ -355,7 +398,7 @@ function tick(){
   if(audio.duration){
     progress.value = (audio.currentTime / audio.duration) * 100;
     curTime.textContent = fmt(audio.currentTime);
-updateFill();
+    updateFill();
   }
   rafId = requestAnimationFrame(tick);
 }
@@ -385,6 +428,7 @@ syncPlayUI();
 
 /* 自动播放：页面加载完先尝试；浏览器拦截有声自动播放时，首次交互即解锁 */
 if(MUSIC.length) loadTrack(0, true);
+
 function unlock(){
   tryPlay();
   ["pointerdown","touchstart","keydown"].forEach(ev => document.removeEventListener(ev, unlock));
@@ -441,6 +485,18 @@ function drawSnow(){
 initSnow();
 drawSnow();
 window.addEventListener("resize", initSnow);
+
+/* ================= 加载动画：页面加载完淡出，兜底超时强制隐藏 ================= */
+const loader = document.getElementById("loader");
+let loaderHidden = false;
+function hideLoader(){
+  if(loaderHidden) return;
+  loaderHidden = true;
+  loader.classList.add("hide");
+  setTimeout(() => loader.remove(), 450);
+}
+window.addEventListener("load", () => setTimeout(hideLoader, 300));
+setTimeout(hideLoader, 4000);
 </script>
 </body>
 </html>
