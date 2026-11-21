@@ -1,187 +1,386 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>小哲分享</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: system-ui, sans-serif;
-    }
-    body {
-      min-height: 100vh;
-      background-image: url("assets/bg.jpg");
-      background-size: cover;
-      background-position: center;
-      background-attachment: fixed;
-      padding: 24px 16px;
-    }
-    .container {
-      max-width: 900px;
-      margin: 0 auto;
-    }
-    header {
-      text-align: center;
-      margin-bottom:32px;
-      color:#fff;
-    }
-    .hero-icon{
-      width:72px;height:72px;
-      border-radius:16px;
-      background:rgba(255,255,255,0.2);
-      display:flex;
-      align-items:center;justify-content:center;
-      font-size:36px;
-      margin:0 auto 12px;
-      backdrop-filter: blur(10px);
-    }
-    h1{
-      font-size:28px;
-      margin-bottom:6px;
-    }
-    .desc{
-opacity:0.85;
-    }
-    .category-title{
-      color:#fff;
-      margin:28px 0 14px;
-      font-size:16px;
-      display:flex;
-      align-items:center;
-      gap:6px;
-    }
-    .card-wrap{
-      display:grid;
-      grid-template-columns: repeat(auto-fill, minmax(260px,1fr));
-      gap:14px;
-    }
-    .card{
-      background:rgba(255,255,255,0.12);
-      backdrop-filter: blur(12px);
-      border:1px solid rgba(255,255,255,0.18);
-      border-radius:14px;
-      padding:16px;
-      color:#fff;
-      cursor:pointer;
-      transition: all 0.3s;
-    }
-    .card:hover{
-      background:rgba(255,255,255,0.22);
-      transform: translateY(-3px);
-    }
-    .card .icon{
-      font-size:26px;
-      margin-bottom:8px;
-    }
-    .card h3{
-      font-size:17px;
-      margin-bottom:4px;
-    }
-    .card p{
-      font-size:13px;
-      opacity:0.75;
-    }
-    footer{
-      text-align:center;
-      color:rgba(255,255,255,0.7);
-      margin-top:40px;
-      font-size:14px;
-    }
-    .player-wrap{
-      position:fixed;
-bottom:20px;
-      left:50%;
-      transform:translateX(-50%);
-      width:min(94%,520px);
-      background:rgba(255,255,255,0.14);
-      backdrop-filter: blur(14px);
-      border:1px solid rgba(255,255,255,0.2);
-      border-radius:16px;
-      padding:14px;
-      color:#fff;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>小哲分享</title>
+<style>
+  /* ============ 自定义区：改这里调颜色 ============ */
+  :root{
+    --bg1:#2a1f1a;
+    --bg2:#3a2a22;
+    --bg3:#241a18;
+    --glass:rgba(255,255,255,.12);
+    --glass-strong:rgba(255,255,255,.16);
+    --glass-border:rgba(255,255,255,.22);
+    --highlight:rgba(255,255,255,.28);
+    --text:#fbf3ea;
+    --sub:#e6cfc0;
+    --accent:#ffc37a;
+    --blob1:#ff9a5a;
+    --blob2:#ff7ab0;
+    --blob3:#ffd27a;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{height:100%;}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;
+    color:var(--text);
+    min-height:100vh;
+    background:
+      linear-gradient(rgba(20,15,12,.28),rgba(20,15,12,.40)),
+      url("assets/bg.jpg") center/cover fixed;
+    padding:36px 18px 60px;
+    position:relative;
+    overflow-x:hidden;
+}
+  /* 背景光斑 */
+  .blob{position:fixed;border-radius:50%;filter:blur(80px);opacity:0;z-index:0;pointer-events:none;}
+  .blob.b1{width:320px;height:320px;background:var(--blob1);top:-90px;left:-70px;}
+  .blob.b2{width:300px;height:300px;background:var(--blob2);top:18%;right:-90px;}
+  .blob.b3{width:280px;height:280px;background:var(--blob3);bottom:-80px;left:18%;}
+
+  .wrap{max-width:880px;margin:0 auto;position:relative;z-index:1;}
+
+  /* 玻璃通用层 */
+  .glass{
+    background:linear-gradient(135deg,var(--glass-strong),var(--glass));
+    border:1px solid var(--glass-border);
+    backdrop-filter:blur(26px) saturate(150%);
+    -webkit-backdrop-filter:blur(26px) saturate(150%);
+    box-shadow:
+      0 10px 40px rgba(0,0,0,.30),
+      inset 0 1px 0 var(--highlight),
+      inset 0 -1px 0 rgba(255,255,255,.06);
+  }
+
+  /* 头部（全透明，文字直接压背景） */
+  .hero{
+    padding:32px 24px;
+    text-align:center;
+    margin-bottom:22px;
+    position:relative;
+  }
+  .hero .avatar{
+    width:74px;height:74px;border-radius:23px;margin:0 auto 14px;
+background:linear-gradient(135deg,var(--blob1),var(--blob2));
+    display:flex;align-items:center;justify-content:center;font-size:34px;
+    box-shadow:0 10px 28px rgba(91,140,255,.40),inset 0 1px 0 rgba(255,255,255,.35);
+    position:relative;
+  }
+  .hero h1{
+    font-size:25px;font-weight:700;letter-spacing:.5px;position:relative;
+    text-shadow:0 2px 12px rgba(0,0,0,.65),0 1px 3px rgba(0,0,0,.5);
+  }
+  .hero p{
+    margin-top:8px;color:var(--sub);font-size:14px;position:relative;
+    text-shadow:0 1px 8px rgba(0,0,0,.6);
+  }
+
+  /* 分组 */
+  section{margin-bottom:28px;}
+  section h2{
+    font-size:15px;font-weight:600;margin-bottom:14px;color:var(--sub);
+    display:flex;align-items:center;gap:8px;letter-spacing:.5px;
+  }
+  section h2 .dot{width:7px;height:7px;border-radius:50%;background:var(--accent);box-shadow:0 0 10px var(--accent);}
+
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:15px;}
+  @media (max-width:640px){ .grid{grid-template-columns:repeat(2,1fr);} }
+  .card{
+display:flex;align-items:center;gap:14px;
+    border-radius:20px;padding:17px 18px;text-decoration:none;color:var(--text);
+    transition:.22s;position:relative;overflow:hidden;
+  }
+  .card::before{
+    content:"";position:absolute;inset:0;
+    background:linear-gradient(120deg,rgba(255,255,255,.14),transparent 45%);
+    opacity:0;transition:.22s;pointer-events:none;
+  }
+  .card:hover{transform:translateY(-3px);border-color:rgba(255,255,255,.35);}
+  .card:hover::before{opacity:1;}
+  .card:active{transform:scale(.98);}
+  .card .icon{
+    width:47px;height:47px;border-radius:15px;flex-shrink:0;
+    background:rgba(255,255,255,.16);
+    border:1px solid rgba(255,255,255,.14);
+    display:flex;align-items:center;justify-content:center;font-size:23px;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.2);
+  }
+  .card .info{min-width:0;}
+  .card .title{font-weight:600;font-size:15px;margin-bottom:3px;}
+  .card .desc{font-size:13px;color:var(--sub);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.empty{text-align:center;color:var(--sub);padding:30px 0;display:none;}
+  footer{text-align:center;margin-top:34px;color:var(--sub);font-size:12px;opacity:.7;}
+
+  /* ===== 右侧居中：玻璃悬浮球 ===== */
+  .fab{
+    position:fixed;right:18px;top:50%;transform:translateY(-50%);z-index:30;
+    width:60px;height:60px;border:none;background:transparent;cursor:pointer;
+  }
+  /* 旋转渐变光环（播放时出现并转动） */
+  .ring{
+    position:absolute;inset:-3px;border-radius:50%;
+    background:conic-gradient(from 0deg,var(--blob1),var(--blob2),var(--blob3),var(--blob1));
+    -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 3.5px),#000 calc(100% - 3px));
+    mask:radial-gradient(farthest-side,transparent calc(100% - 3.5px),#000 calc(100% - 3px));
+    opacity:0;transition:opacity .3s;
+  }
+  .fab.playing .ring{opacity:.9;animation:spin 5s linear infinite;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+
+  /* 玻璃圆球 */
+  .disc{
+    position:relative;width:100%;height:100%;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;font-size:25px;color:#fff;
+background:linear-gradient(135deg,rgba(255,255,255,.22),rgba(255,255,255,.07));
+    border:1px solid rgba(255,255,255,.28);
+    backdrop-filter:blur(12px) saturate(150%);
+    -webkit-backdrop-filter:blur(12px) saturate(150%);
+    box-shadow:
+      0 10px 30px rgba(210,120,60,.40),
+      inset 0 1px 0 rgba(255,255,255,.35),
+      inset 0 -6px 12px rgba(255,255,255,.06);
+    overflow:hidden;
+  }
+  /* 顶部高光 */
+  .disc::before{
+    content:"";position:absolute;top:7%;left:15%;width:44%;height:28%;border-radius:50%;
+    background:linear-gradient(rgba(255,255,255,.35),transparent);filter:blur(2px);
+  }
+
+  /* 展开面板：在悬浮球左侧，垂直居中 */
+  .panel{
+    position:fixed;right:96px;top:50%;z-index:30;
+    width:min(300px,calc(100vw - 120px));border-radius:24px;padding:18px;
+    transform:translateY(-50%) translateX(12px) scale(.96);opacity:0;pointer-events:none;transition:.24s;
+  }
+  .panel.open{transform:translateY(-50%) translateX(0) scale(1);opacity:1;pointer-events:auto;}
+  .panel-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.panel-title{font-size:13px;color:var(--sub);letter-spacing:.5px;}
+  .close-btn{background:none;border:none;color:var(--sub);font-size:16px;cursor:pointer;padding:4px 8px;}
+  .song-title{font-weight:600;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .time{font-size:12px;color:var(--sub);margin-top:4px;}
+  .controls{display:flex;align-items:center;gap:14px;margin:14px 0 10px;}
+  .pbtn{
+    width:42px;height:42px;border-radius:50%;border:1px solid rgba(255,255,255,.16);
+    background:rgba(255,255,255,.14);color:var(--text);font-size:17px;
+    display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;
+  }
+  .pbtn.play{width:50px;height:50px;font-size:20px;background:linear-gradient(135deg,var(--blob1),var(--blob2));border:none;}
+  #progress{width:100%;accent-color:var(--accent);height:6px;cursor:pointer;}
+</style>
 </head>
 <body>
-<div class="container">
-  <header>
-    <div class="hero-icon" id="heroIcon">🌐</div>
-    <h1 id="siteTitle">小哲分享</h1>
-    <p class="desc" id="siteDesc">精选链接，点击即可跳转</p>
-  </header>
-  <div id="content"></div>
-  <footer id="footer">© 小哲分享</footer>
-</div>
+  <div class="blob b1"></div>
+  <div class="blob b2"></div>
+  <div class="blob b3"></div>
 
-<div class="player-wrap">
-  <audio controls id="audioPlayer">
-    <source src="music/1254.mp3">
-  
+  <div class="wrap">
+<div class="hero">
+      <div class="avatar" id="heroIcon">🌐</div>
+      <h1 id="siteTitle">小哲分享</h1>
+      <p id="siteDesc">精选链接，点击即可跳转</p>
+    </div>
+
+    <div id="content"></div>
+    <div class="empty" id="emptyTip">没有找到匹配的内容</div>
+
+    <footer id="footer">© 小哲分享</footer>
+  </div>
+
+  <!-- 玻璃悬浮球 + 展开面板 -->
+  <button class="fab" id="fab" title="音乐">
+    <span class="ring"></span>
+    <span class="disc">🎵</span>
+  </button>
+  <div class="panel glass" id="panel">
+    <div class="panel-head">
+      <span class="panel-title">正在播放</span>
+      <button class="close-btn" id="closeBtn">✕</button>
+    </div>
+    <div class="song-title" id="songTitle">未选择歌曲</div>
+    <div class="time"><span id="curTime">0:00</span> / <span id="durTime">0:00</span></div>
+    <div class="controls">
+      <button class="pbtn" id="prevBtn" title="上一首">⏮</button>
+      <button class="pbtn play" id="playBtn" title="播放/暂停">▶</button>
+      <button class="pbtn" id="nextBtn" title="下一首">⏭</button>
+    </div>
+    <input type="range" id="progress" min="0" max="100" value="0">
 </div>
+  <audio id="audio"></audio>
 
 <script>
-const siteTitle = "小哲分享";
-const siteDesc = "精选链接，点击即可跳转";
-const heroIcon = "🌐";
-const footer = "© 小哲分享";
+/* ============================================================
+   ★★★ 自定义区：只改这一段 ★★★
+   - siteTitle / siteDesc / heroIcon / footer：顶部与底部文字
+   - LINKS：分类数组，每个分类下 items 放链接
+     { icon:"📘", title:"名称", desc:"一句话说明", url:"https://跳转地址" }
+   - MUSIC：播放器歌单
+     { title:"歌曲名", url:"mp3 地址" }
+     url 可以是：① 仓库内音乐文件相对路径，如 "music/song1.mp3"
+                 ② 外部 mp3 直链（需可公开访问、无版权问题）
+     ⚠️ 请使用你拥有版权或无版权的音乐，勿直接搬运付费歌曲直链。
+   ============================================================ */
 
-const data = [
+const siteTitle = "小哲分享";
+const siteDesc  = "精选链接，点击即可跳转";
+const heroIcon  = "🌐";
+const footer    = "© 小哲分享";
+
+const LINKS = [
   {
     category: "常用工具",
     items: [
-      { icon: "📝", title: "文档工具", desc: "在线写作与协作", url: "https://example.com/doc" },
-      { icon: "🎨", title: "设计素材", desc: "图片与模板资源", url: "https://example.com/design" },
-{ icon: "🛠️", title: "效率工具", desc: "日常办公小工具", url: "https://example.com/tools" },
+      { icon:"📝", title:"文档工具", desc:"在线写作与协作", url:"https://example.com/doc" },
+      { icon:"🎨", title:"设计素材", desc:"图片与模板资源", url:"https://example.com/design" },
+      { icon:"🛠️", title:"效率工具", desc:"日常办公小工具", url:"https://example.com/tools" },
     ]
   },
   {
     category: "学习资源",
     items: [
-      { icon: "📚", title: "课程合集", desc: "系统学习教程", url: "https://example.com/course" },
-      { icon: "🔍", title: "资料检索", desc: "文献与资料查找", url: "https://example.com/search" },
+{ icon:"📚", title:"课程合集", desc:"系统学习教程", url:"https://example.com/course" },
+      { icon:"🔎", title:"资料检索", desc:"文献与资料查找", url:"https://example.com/search" },
+      { icon:"🌐", title:"百科查询", desc:"常识与资料补充", url:"https://example.com/wiki" },
     ]
   },
   {
     category: "生活娱乐",
     items: [
-      { icon: "🎬", title: "影视站点", desc: "观看与收藏", url: "https://example.com/movie" },
-      { icon: "🎵", title: "音乐播放", desc: "在线听歌", url: "https://example.com/music" },
+      { icon:"🎬", title:"影视站点", desc:"观看与收藏", url:"https://example.com/movie" },
+      { icon:"🎵", title:"音乐播放", desc:"点右侧玻璃球听歌", url:"#panel" },
+      { icon:"🎮", title:"休闲小游戏", desc:"解压放松", url:"https://example.com/game" },
     ]
   }
 ];
 
+const MUSIC = [
+  { title:"在情绪上头的时候", url:"music/1254.mp3" },
+];
+
+/* ================= 以下为渲染逻辑，一般不用改 ================= */
 document.getElementById("siteTitle").textContent = siteTitle;
 document.getElementById("siteDesc").textContent = siteDesc;
 document.getElementById("heroIcon").textContent = heroIcon;
 document.getElementById("footer").textContent = footer;
 
 const content = document.getElementById("content");
-function render(){
+const emptyTip = document.getElementById("emptyTip");
+function render(keyword = "") {
   content.innerHTML = "";
-  data.forEach(group=>{
-    const catDiv = document.createElement("div");
-    catDiv.innerHTML = `<div class="category-title">● ${group.category}</div>`;
-    const cardWrap = document.createElement("div");
-    cardWrap.className = "card-wrap";
-    group.items.forEach(item=>{
-      const card = document.createElement("div");
-      card.className = "card";
-      card.innerHTML = `
-        <div class="icon">${item.icon}</div>
-        <h3>${item.title}</h3>
-        <p>${item.desc}</p>
-      `;
-      card.onclick = ()=> window.open(item.url,"_blank");
-      cardWrap.appendChild(card);
-    })
-    catDiv.appendChild(cardWrap);
-    content.appendChild(catDiv);
-  })
+  let total = 0;
+  const kw = keyword.trim().toLowerCase();
+
+  LINKS.forEach(group => {
+    const items = group.items.filter(it =>
+      !kw || it.title.toLowerCase().includes(kw) || it.desc.toLowerCase().includes(kw)
+    );
+    if (items.length === 0) return;
+    total += items.length;
+
+    const section = document.createElement("section");
+    section.innerHTML = `<h2><span class="dot"></span>${group.category}</h2>`;
+    const grid = document.createElement("div");
+    grid.className = "grid";
+
+    items.forEach(it => {
+      const a = document.createElement("a");
+      a.className = "card glass";
+      const isAnchor = it.url && it.url.startsWith("#");
+      a.href = it.url;
+      if (!isAnchor) { a.target = "_blank"; a.rel = "noopener noreferrer"; }
+      a.innerHTML = `
+        <div class="icon">${it.icon || "🔗"}</div>
+        <div class="info">
+          <div class="title">${it.title}</div>
+          <div class="desc">${it.desc || ""}</div>
+</div>`;
+      grid.appendChild(a);
+    });
+    section.appendChild(grid);
+    content.appendChild(section);
+  });
+
+  emptyTip.style.display = total === 0 ? "block" : "none";
 }
+
 render();
+
+/* ================= 悬浮球 / 面板 ================= */
+const fab = document.getElementById("fab");
+const panel = document.getElementById("panel");
+const closeBtn = document.getElementById("closeBtn");
+
+function openPanel(){ panel.classList.add("open"); }
+function closePanel(){ panel.classList.remove("open"); }
+fab.addEventListener("click", () => panel.classList.toggle("open"));
+closeBtn.addEventListener("click", closePanel);
+
+/* ================= 播放器逻辑 ================= */
+const audio = document.getElementById("audio");
+const playBtn = document.getElementById("playBtn");
+const prevBtn = document.getElementById("prevBtn");
+const nextBtn = document.getElementById("nextBtn");
+const songTitle = document.getElementById("songTitle");
+const curTime = document.getElementById("curTime");
+const durTime = document.getElementById("durTime");
+const progress = document.getElementById("progress");
+
+let cur = 0;
+
+function fmt(sec){
+  if(isNaN(sec)) return "0:00";
+  const m = Math.floor(sec/60), s = Math.floor(sec%60);
+  return `${m}:${s<10?"0":""}${s}`;
+}
+
+function syncPlayUI(){
+  const playing = !audio.paused && !audio.ended;
+  playBtn.textContent = playing ? "⏸" : "▶";
+  fab.classList.toggle("playing", playing);
+}
+
+function loadTrack(i, autoplay = true){
+  cur = (i + MUSIC.length) % MUSIC.length;
+  const track = MUSIC[cur];
+  songTitle.textContent = track.title || "未命名歌曲";
+  audio.src = track.url || "";
+  progress.value = 0;
+  curTime.textContent = "0:00";
+  durTime.textContent = "0:00";
+  if(!track.url){ playBtn.textContent = "▶"; fab.classList.remove("playing"); return; }
+  if(autoplay) tryPlay();
+}
+
+function tryPlay(){
+  audio.play().then(syncPlayUI).catch(()=>{ syncPlayUI(); });
+}
+
+playBtn.addEventListener("click", () => {
+  if(!MUSIC[cur] || !MUSIC[cur].url){ songTitle.textContent = "请先在 MUSIC 里填写 mp3 地址"; return; }
+  if(audio.paused){ tryPlay(); }
+  else{ audio.pause(); syncPlayUI(); }
+});
+prevBtn.addEventListener("click", () => loadTrack(cur - 1));
+nextBtn.addEventListener("click", () => loadTrack(cur + 1));
+
+audio.addEventListener("loadedmetadata", () => { durTime.textContent = fmt(audio.duration); });
+audio.addEventListener("timeupdate", () => {
+  if(audio.duration){ progress.value = (audio.currentTime / audio.duration) * 100; }
+  curTime.textContent = fmt(audio.currentTime);
+});
+audio.addEventListener("play", syncPlayUI);
+audio.addEventListener("pause", syncPlayUI);
+audio.addEventListener("ended", () => loadTrack(cur + 1));
+progress.addEventListener("input", () => {
+  if(audio.duration){ audio.currentTime = (progress.value/100) * audio.duration; }
+});
+
+/* 自动播放：先尝试；被浏览器拦截时，首次点击/触摸页面后自动解锁播放 */
+if(MUSIC.length) loadTrack(0, true);
+function unlock(){ tryPlay(); document.removeEventListener("pointerdown", unlock); }
+document.addEventListener("pointerdown", unlock);
 </script>
 </body>
 </html>
