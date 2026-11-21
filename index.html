@@ -27,13 +27,15 @@
     font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;
     color:var(--text);
     min-height:100vh;
-    background:
-      linear-gradient(rgba(20,15,12,.28),rgba(20,15,12,.40)),
-      url("assets/bg.jpg") center/cover fixed;
+    background:var(--bg3);
     padding:36px 18px 60px;
     position:relative;
     overflow-x:hidden;
-}
+  }
+  /* 背景图：先出底色，图片加载完再淡入 */
+  .bg{position:fixed;inset:0;z-index:0;background:url("assets/bg.jpg") center/cover fixed;opacity:0;transition:opacity .9s ease;}
+.bg::after{content:"";position:absolute;inset:0;background:linear-gradient(rgba(20,15,12,.28),rgba(20,15,12,.40));}
+  .bg.loaded{opacity:1;}
   /* 背景光斑 */
   .blob{position:fixed;border-radius:50%;filter:blur(80px);opacity:0;z-index:0;pointer-events:none;}
   .blob.b1{width:320px;height:320px;background:var(--blob1);top:-90px;left:-70px;}
@@ -57,13 +59,13 @@
   /* 头部（全透明，文字直接压背景） */
   .hero{
     padding:32px 24px;
-    text-align:center;
+text-align:center;
     margin-bottom:22px;
     position:relative;
   }
   .hero .avatar{
     width:74px;height:74px;border-radius:23px;margin:0 auto 14px;
-background:linear-gradient(135deg,var(--blob1),var(--blob2));
+    background:linear-gradient(135deg,var(--blob1),var(--blob2));
     display:flex;align-items:center;justify-content:center;font-size:34px;
     box-shadow:0 10px 28px rgba(91,140,255,.40),inset 0 1px 0 rgba(255,255,255,.35);
     position:relative;
@@ -84,11 +86,10 @@ background:linear-gradient(135deg,var(--blob1),var(--blob2));
     display:flex;align-items:center;gap:8px;letter-spacing:.5px;
   }
   section h2 .dot{width:7px;height:7px;border-radius:50%;background:var(--accent);box-shadow:0 0 10px var(--accent);}
-
-  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:15px;}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:15px;}
   @media (max-width:640px){ .grid{grid-template-columns:repeat(2,1fr);} }
   .card{
-display:flex;align-items:center;gap:14px;
+    display:flex;align-items:center;gap:14px;
     border-radius:20px;padding:17px 18px;text-decoration:none;color:var(--text);
     transition:.22s;position:relative;overflow:hidden;
   }
@@ -109,8 +110,9 @@ display:flex;align-items:center;gap:14px;
   }
   .card .info{min-width:0;}
   .card .title{font-weight:600;font-size:15px;margin-bottom:3px;}
-  .card .desc{font-size:13px;color:var(--sub);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.empty{text-align:center;color:var(--sub);padding:30px 0;display:none;}
+.card .desc{font-size:13px;color:var(--sub);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+
+  .empty{text-align:center;color:var(--sub);padding:30px 0;display:none;}
   footer{text-align:center;margin-top:34px;color:var(--sub);font-size:12px;opacity:.7;}
 
   /* ===== 动态雪花层 ===== */
@@ -128,9 +130,9 @@ display:flex;align-items:center;gap:14px;
   .player-card #progress{width:100%;}
   .pbtn{
     width:36px;height:36px;border-radius:50%;border:1px solid rgba(255,255,255,.28);
-    background:linear-gradient(135deg,rgba(255,255,255,.22),rgba(255,255,255,.08));
+background:linear-gradient(135deg,rgba(255,255,255,.22),rgba(255,255,255,.08));
     color:var(--text);font-size:15px;
-display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;
+    display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;
     backdrop-filter:blur(12px) saturate(160%);-webkit-backdrop-filter:blur(12px) saturate(160%);
     box-shadow:inset 0 1px 0 rgba(255,255,255,.30),inset 0 -2px 5px rgba(255,255,255,.08),0 4px 12px rgba(0,0,0,.18);
     transition:transform .2s,background .2s,box-shadow .2s,border-color .2s;
@@ -142,9 +144,9 @@ display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrin
     background:linear-gradient(135deg,rgba(255,255,255,.28),rgba(255,255,255,.10));
     backdrop-filter:blur(14px) saturate(160%);-webkit-backdrop-filter:blur(14px) saturate(160%);
     box-shadow:inset 0 1px 0 rgba(255,255,255,.40),inset 0 -2px 6px rgba(255,255,255,.10),0 6px 16px rgba(0,0,0,.22);
-  }
+}
   .pbtn.play:hover{transform:scale(1.1);}
-.time{display:none;}
+  .time{display:none;}
 
   /* 进度条：荧光填充，随进度自适应发光 */
   #progress{
@@ -164,6 +166,7 @@ display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrin
 </style>
 </head>
 <body>
+  <div class="bg" id="bgImg"></div>
   <div class="blob b1"></div>
   <div class="blob b2"></div>
   <div class="blob b3"></div>
@@ -171,9 +174,9 @@ display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrin
 
   <div class="wrap">
     <div class="hero">
-      <div class="avatar" id="heroIcon">🌐</div>
+<div class="avatar" id="heroIcon">🌐</div>
       <h1 id="siteTitle">小哲分享</h1>
-<p id="siteDesc">精选链接，点击即可跳转</p>
+      <p id="siteDesc">精选链接，点击即可跳转</p>
     </div>
 
     <div id="content"></div>
@@ -182,7 +185,7 @@ display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrin
     <footer id="footer">© 小哲分享</footer>
   </div>
 
-  <audio id="audio" preload="auto"></audio>
+  <audio id="audio" preload="none"></audio>
 
 <script>
 /* ============================================================
@@ -207,8 +210,8 @@ const LINKS = [
     category: "常用工具",
     items: [
       { icon:"📝", title:"文档工具", desc:"在线写作与协作", url:"https://example.com/doc" },
-      { icon:"🎨", title:"设计素材", desc:"图片与模板资源", url:"https://example.com/design" },
-{ icon:"🛠️", title:"效率工具", desc:"日常办公小工具", url:"https://example.com/tools" },
+{ icon:"🎨", title:"设计素材", desc:"图片与模板资源", url:"https://example.com/design" },
+      { icon:"🛠️", title:"效率工具", desc:"日常办公小工具", url:"https://example.com/tools" },
     ]
   },
   {
@@ -238,6 +241,7 @@ document.getElementById("siteTitle").textContent = siteTitle;
 document.getElementById("siteDesc").textContent = siteDesc;
 document.getElementById("heroIcon").textContent = heroIcon;
 document.getElementById("footer").textContent = footer;
+
 const content = document.getElementById("content");
 const emptyTip = document.getElementById("emptyTip");
 
@@ -264,10 +268,10 @@ function render(keyword = "") {
         card.className = "card glass player-card";
         card.innerHTML = `
           <div class="pc-head">
-            <div class="icon">${it.icon || "🎵"}</div>
+<div class="icon">${it.icon || "🎵"}</div>
             <div class="info">
               <div class="bar-title" id="barTitle">未选择歌曲</div>
-<div class="bar-state" id="barState">点击播放</div>
+              <div class="bar-state" id="barState">点击播放</div>
             </div>
           </div>
           <div class="controls">
@@ -288,11 +292,11 @@ function render(keyword = "") {
         <div class="icon">${it.icon || "🔗"}</div>
         <div class="info">
           <div class="title">${it.title}</div>
-          <div class="desc">${it.desc || ""}</div>
+<div class="desc">${it.desc || ""}</div>
         </div>`;
       grid.appendChild(a);
     });
-section.appendChild(grid);
+    section.appendChild(grid);
     content.appendChild(section);
   });
 
@@ -322,10 +326,10 @@ function loadTrack(i, autoplay = true){
   if(barTitle) barTitle.textContent = track.title || "未命名歌曲";
   audio.src = track.url || "";
   if(progress) progress.value = 0;
-  updateFill();
+updateFill();
   if(curTime) curTime.textContent = "0:00";
   if(durTime) durTime.textContent = "0:00";
-if(!track.url){ if(playBtn) playBtn.textContent = "▶"; if(barState) barState.textContent = "暂无歌曲"; return; }
+  if(!track.url){ if(playBtn) playBtn.textContent = "▶"; if(barState) barState.textContent = "暂无歌曲"; return; }
   if(autoplay) tryPlay();
 }
 
@@ -349,11 +353,11 @@ function initPlayer(){
   nextBtn = document.getElementById("nextBtn");
   curTime = document.getElementById("curTime");
   durTime = document.getElementById("durTime");
-  progress = document.getElementById("progress");
+progress = document.getElementById("progress");
   if(!playBtn) return;
 
   playBtn.onclick = () => {
-if(!MUSIC[cur] || !MUSIC[cur].url){ if(barState) barState.textContent = "暂无歌曲"; return; }
+    if(!MUSIC[cur] || !MUSIC[cur].url){ if(barState) barState.textContent = "暂无歌曲"; return; }
     if(audio.paused){ tryPlay(); } else { audio.pause(); syncPlayUI(); }
   };
   prevBtn.onclick = () => loadTrack(cur - 1);
@@ -379,6 +383,7 @@ audio.addEventListener("timeupdate", () => {
 audio.addEventListener("play", syncPlayUI);
 audio.addEventListener("pause", syncPlayUI);
 audio.addEventListener("ended", () => loadTrack(cur + 1));
+
 /* 自动播放：页面加载完先尝试；浏览器拦截有声自动播放时，首次交互即解锁 */
 if(MUSIC.length) loadTrack(0, true);
 
@@ -404,8 +409,7 @@ function initSnow(){
   snow.width = SW * dpr; snow.height = SH * dpr;
   snow.style.width = SW + "px"; snow.style.height = SH + "px";
   sctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-
-  const count = SW < 640 ? 35 : 70;
+const count = SW < 640 ? 35 : 70;
   flakes = Array.from({length: count}, () => ({
     x: Math.random() * SW,
     y: Math.random() * SH,
@@ -435,9 +439,16 @@ function drawSnow(){
   requestAnimationFrame(drawSnow);
 }
 
-initSnow();
-drawSnow();
-window.addEventListener("resize", initSnow);
+/* 首屏渲染完成后再启动雪花，避免抢占加载资源 */
+function startSnow(){ initSnow(); drawSnow(); }
+if(document.readyState === "complete"){ setTimeout(startSnow, 120); }
+else{ window.addEventListener("load", () => setTimeout(startSnow, 120)); }
+window.addEventListener("resize", () => { if(flakes.length) initSnow(); });
+
+/* 背景图预加载，完成后淡入，先显示底色不空白等待 */
+const bgImg = new Image();
+bgImg.onload = () => document.getElementById("bgImg").classList.add("loaded");
+bgImg.src = "assets/bg.jpg";
 </script>
 </body>
 </html>
